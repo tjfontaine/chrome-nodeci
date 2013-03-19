@@ -106,7 +106,7 @@ function pullRequest(pr, opts) {
 
       $('#jenkinsBuildResults').append(html);
 
-      $('#jenkinsBuild').click(function () {
+      $('.jenkins-build').click(function () {
         buildPR(this, opts);
       });
     }
