@@ -12,7 +12,7 @@
   "content_scripts": [{
     "matches": [
       "https://github.com/joyent/*/pull/*",
-      "https://github.com/joyent/*/pulls"
+      "https://github.com/joyent/*/pulls*"
     ],
     "js": [
       "jquery.js",
