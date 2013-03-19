@@ -42,10 +42,21 @@ function pullList(opts) {
       var a = $(div).children('h3').children('a')[0];
       url += a.pathname;
       $.getJSON(url, function (data) {
-        $(a).after('<button data-pr="'+ a.pathname +'" ' + getSI(data, 'jenkins-build') +'>'+ data.status + '</div>');
-        $('.jenkins-build').click(function () {
-          buildPR(this, opts);
-        });
+        var type = 'div', klass = '';
+        if (canBuild(opts) && data.status != 'BUILDING') {
+          type = 'button';
+          klass = 'jenkins-build';
+        }
+
+        $(a).after('<'+type+' data-pr="'+ a.pathname +'" ' + getSI(data, klass) +'>'+ data.status + '</'+type+'>');
+
+        if (canBuild(opts) && data.status != 'BUILDING') {
+          $('.jenkins-build').click(function () {
+            buildPR(this, opts);
+          });
+        } else {
+          console.log(data);
+        }
       });
     }
   });
