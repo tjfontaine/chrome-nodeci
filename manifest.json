@@ -1,0 +1,22 @@
+{
+  "manifest_version": 2,
+  "name": "Node.js CI",
+  "version": "1.0",
+  "options_page": "options.html",
+  "permissions": [
+    "storage",
+    "https://github.com/*",
+    "http://jenkins.nodejs.org/*",
+    "http://jenkins.nodejs.org:8002/*"
+  ],
+  "content_scripts": [{
+    "matches": [
+      "https://github.com/joyent/*/pull/*",
+      "https://github.com/joyent/*/pulls"
+    ],
+    "js": [
+      "jquery.js",
+      "github_pull.js"
+    ]
+  }]
+}
