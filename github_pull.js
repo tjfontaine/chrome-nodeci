@@ -1,4 +1,4 @@
-var HOSTNAME = 'jenkins.nodejs.org:8002';
+var HOSTNAME = 'jenkins.nodejs.org';
 var STORAGE = [
   'JENKINS_USERNAME',
   'JENKINS_API_TOKEN',
