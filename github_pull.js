@@ -30,7 +30,10 @@ function getSI(data, klass) {
 function buildPR(elm, opts) {
   if (canBuild(opts)) {
     var pr = $(elm).data('pr');
-    $.post('http://' + HOSTNAME + pr + '?' + $.param(opts), function () { location.reload(); });
+    $.getJSON('https://api.github.com/repos' + pr.replace('pull', 'pulls'), function (data) {
+      var o = $.extend(opts, { REBASE_BRANCH: data.base.ref });
+      $.post('http://' + HOSTNAME + pr + '?' + $.param(o), function () { location.reload(); });
+    });
   }
 }
 
