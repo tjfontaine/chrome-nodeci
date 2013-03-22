@@ -1,4 +1,4 @@
-var HOSTNAME = 'jenkins.nodejs.org';
+var HOSTNAME = 'jenkins.nodejs.org:8002';
 var STORAGE = [
   'JENKINS_USERNAME',
   'JENKINS_API_TOKEN',
@@ -50,15 +50,31 @@ function pullList(opts) {
 
         $(a).after('<'+type+' data-pr="'+ a.pathname +'" ' + getSI(data, klass) +'>'+ data.status + '</'+type+'>');
 
-        if (canBuild(opts) && data.status != 'BUILDING') {
-          $('.jenkins-build').click(function () {
-            buildPR(this, opts);
-          });
-        } else {
-          console.log(data);
-        }
+        $('.jenkins-build').click(function () {
+          buildPR(this, opts);
+        });
       });
     }
+  });
+}
+
+function checkCla(opts) {
+  var user = $('.discussion-topic-author a')[0].pathname;
+  $.getJSON('https://api.github.com/users' + user, function (user) {
+    var url = 'http://' + HOSTNAME + '/cla/either/' + user.name + '/' + user.email;
+    url += '?' + $.param(opts);
+    $.getJSON(url, function (entry) {
+      if (entry.length) {
+        var html = '<table width="100%"><tr><th>Full Name</th><th>E-Mail</th></tr>';
+        entry.forEach(function (e) {
+          html += '<tr><td>' + e['gsx$fullname']['$t'] + '</td><td>' + e['gsx$e-mail']['$t'] + '</td></tr>';
+        });
+        html += '</table>';
+        $('#jenkinsCLA').html(html);
+      } else {
+        $('#jenkinsCLA').html('<h2>This user has no CLA candidates</h2>');
+      }
+    });
   });
 }
 
@@ -68,6 +84,11 @@ function pullRequest(pr, opts) {
     $('#pr_contributors_box').before('<div id="jenkins"></div>');
     $('#jenkins').append('<div id="jenkinsBuildIndicator" ' + getSI(data, '') + '>'+ data.status + '</div>');
     $('#jenkins').append('<div id="jenkinsBuildResults" class="discussion-bubble-inner"></div>');
+    $('#jenkinsBuildResults').append('<div id="jenkinsCLA" />');
+
+    if (canBuild(opts)) {
+      checkCla(opts);
+    }
 
     if (data.status != 'PASSING') {
       var html = '<table class="commits commits-conendsed" width="100%">';
