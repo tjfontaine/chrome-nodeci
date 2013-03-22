@@ -61,7 +61,17 @@ function pullList(opts) {
 function checkCla(opts) {
   var user = $('.discussion-topic-author a')[0].pathname;
   $.getJSON('https://api.github.com/users' + user, function (user) {
-    var url = 'http://' + HOSTNAME + '/cla/either/' + user.name + '/' + user.email;
+    var url = 'http://' + HOSTNAME + '/cla/';
+    if (!user.email)
+      url += 'fullname';
+    else
+      url += 'either';
+
+    url += '/' + user.name;
+
+    if (user.email)
+      url += '/' + user.email;
+
     url += '?' + $.param(opts);
     $.getJSON(url, function (entry) {
       if (entry.length) {
