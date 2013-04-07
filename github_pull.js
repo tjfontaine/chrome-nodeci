@@ -38,11 +38,11 @@ function buildPR(elm, opts) {
 }
 
 function pullList(opts) {
-  $('.pulls-list div').each(function (i, div) {
-    var h3 = $(div).children('h3');
+  $('ul.pulls-list > li').each(function (i, div) {
+    var h3 = $(div).children('h4');
     if (h3.length) {
       var url = 'http://' + HOSTNAME;
-      var a = $(div).children('h3').children('a')[0];
+      var a = $(div).children('h4').children('a')[0];
       url += a.pathname;
       $.getJSON(url, function (data) {
         var type = 'div', klass = '';
