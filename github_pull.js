@@ -38,7 +38,7 @@ function buildPR(elm, opts) {
 }
 
 function pullList(opts) {
-  $('ul.pulls-list > li').each(function (i, div) {
+  $('div.pulls-list > ul > li').each(function (i, div) {
     var h3 = $(div).children('h4');
     if (h3.length) {
       var url = 'http://' + HOSTNAME;
