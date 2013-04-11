@@ -106,20 +106,23 @@ function pullRequest(pr, opts) {
     if (data.status != 'PASSING') {
       var html = '<table class="commits commits-conendsed" width="100%">';
       data.result = data.result || {};
+      var results = {};
       $.each(data.result, function (i) {
         var result = data.result[i];
         if (!result) return;
         if (result.length) {
           result.forEach(function (test) {
-            html += '<tr class="commit js-details-container js-socket-channel js-updatable-content">';
-            html += '<td class="author">' + i + '</td>';
-            html += '<td class="message"><code>';
-            html += '<a target="_new" href="' + test.url.replace('/artifact/test.tap', '');
-            html += '/tapTestReport/test.tap-' + test.number + '/">';
-            html += test.desc + '</a></code></td>';
-            html += '</tr>';
+            var r = results[test.desc] = results[test.desc] || [];
+            var url = test.url.replace('/artifact/test.tap', '') + '/tapTestReport/test.tap-' + test.number + '/';
+            r.push('<a target="_new" href="'+ url + '">' + i + '</a>');
           });
         }
+      });
+      $.each(results, function (i, e) {
+        html += '<tr class="commit js-details-container js-socket-channel js-updatable-content">';
+        html += '<td class="author">' + i + '</td>';
+        html += '<td class="message">' + e.join(', ') + '</td>';
+        html += '</tr>';
       });
       html += '</table>';
       $('#jenkinsBuildResults').append(html);
